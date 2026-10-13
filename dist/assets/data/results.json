@@ -1,0 +1,1318 @@
+{
+  "abstract": "One-step image editors enable search over alternative prompts and random seeds, but using these candidates effectively requires balancing edit fidelity, source preservation, and computation. We present SearchChord, a training-free framework that combines text-based preselection, optional image verification, and latent-field recomposition. TextSim preselects ten of 100 candidates using text similarity, computes their control fields, and optionally reweights them using image-verifier scores. Experiments on PIE-Bench and CropWeed-EditBench reveal a consistent preservation\u2013semantic trade-off: recomposition improves preservation of unchanged content, while candidate selection can achieve stronger target-text alignment. On PIE-Bench, diagnostic oracle recomposition reaches 24.73 dB PSNR, whereas oracle selection from 200 candidates reaches 25.46 CLIP-Edited. Practical verification partially recovers semantic alignment but does not eliminate the loss associated with recomposition, including on agricultural edits. These findings motivate text-first preselection and stronger verification to balance preservation, edit fidelity, and computational cost.",
+  "examples": [
+    {
+      "id": "000000000039",
+      "dataset": "PIE",
+      "category": "Mixed edits",
+      "title": "Change background from the dirt to sea",
+      "instruction": "Change background from the dirt to sea",
+      "sourcePrompt": "two ducks in the dirt",
+      "targetPrompt": "two ducks in the sea",
+      "change": {
+        "before": "dirt",
+        "after": "sea"
+      },
+      "images": {
+        "source": "assets/images/pie-000000000039-source.jpg",
+        "chord": "assets/images/pie-000000000039-chord.jpg",
+        "textsim": "assets/images/pie-000000000039-textsim.jpg",
+        "cascade": "assets/images/pie-000000000039-cascade.jpg"
+      },
+      "metrics": {
+        "chord": {
+          "psnr_unedit": 19.203031570989484,
+          "mse_unedit_x1e3": 12.014254927635193,
+          "lpips_unedit_x1e3": 100.17949342727661,
+          "clip_whole": 24.18206024169922,
+          "clip_edited": 24.455759048461914
+        },
+        "textsim": {
+          "psnr_unedit": 21.411423974445086,
+          "mse_unedit_x1e3": 7.225328590720892,
+          "lpips_unedit_x1e3": 71.5833455324173,
+          "clip_whole": 25.205049514770508,
+          "clip_edited": 24.14003562927246
+        },
+        "cascade": {
+          "psnr_unedit": 21.080981187430552,
+          "mse_unedit_x1e3": 7.796539459377527,
+          "lpips_unedit_x1e3": 71.04910910129547,
+          "clip_whole": 25.845855712890625,
+          "clip_edited": 27.09852409362793
+        }
+      },
+      "delta": {
+        "psnr_unedit": 1.877949616441068,
+        "mse_unedit_x1e3": -4.217715468257666,
+        "lpips_unedit_x1e3": -29.13038432598114,
+        "clip_whole": 1.6637954711914062,
+        "clip_edited": 2.6427650451660156
+      }
+    },
+    {
+      "id": "122000000001",
+      "dataset": "PIE",
+      "category": "Object replacement",
+      "title": "change the spider man to robot",
+      "instruction": "change the spider man to robot",
+      "sourcePrompt": "spiderman on the roof",
+      "targetPrompt": "robot on the roof",
+      "change": {
+        "before": "spiderman",
+        "after": "robot"
+      },
+      "images": {
+        "source": "assets/images/pie-122000000001-source.jpg",
+        "chord": "assets/images/pie-122000000001-chord.jpg",
+        "textsim": "assets/images/pie-122000000001-textsim.jpg",
+        "cascade": "assets/images/pie-122000000001-cascade.jpg"
+      },
+      "metrics": {
+        "chord": {
+          "psnr_unedit": 16.32857414577362,
+          "mse_unedit_x1e3": 23.288557305932045,
+          "lpips_unedit_x1e3": 254.20379638671875,
+          "clip_whole": 21.760053634643555,
+          "clip_edited": 19.830812454223633
+        },
+        "textsim": {
+          "psnr_unedit": 20.025568444446414,
+          "mse_unedit_x1e3": 9.941299445927143,
+          "lpips_unedit_x1e3": 129.42610681056976,
+          "clip_whole": 21.03974151611328,
+          "clip_edited": 18.71967315673828
+        },
+        "cascade": {
+          "psnr_unedit": 19.74097013570129,
+          "mse_unedit_x1e3": 10.61458420008421,
+          "lpips_unedit_x1e3": 139.82804119586945,
+          "clip_whole": 23.09531593322754,
+          "clip_edited": 20.640104293823242
+        }
+      },
+      "delta": {
+        "psnr_unedit": 3.4123959899276706,
+        "mse_unedit_x1e3": -12.673973105847836,
+        "lpips_unedit_x1e3": -114.3757551908493,
+        "clip_whole": 1.3352622985839844,
+        "clip_edited": 0.8092918395996094
+      }
+    },
+    {
+      "id": "000000000010",
+      "dataset": "PIE",
+      "category": "Mixed edits",
+      "title": "Replace the goat with a horse",
+      "instruction": "Replace the goat with a horse",
+      "sourcePrompt": "photo of a goat and a cat standing on rocks near the ocean",
+      "targetPrompt": "photo of a horse and a cat standing on rocks near the ocean",
+      "change": {
+        "before": "goat",
+        "after": "horse"
+      },
+      "images": {
+        "source": "assets/images/pie-000000000010-source.jpg",
+        "chord": "assets/images/pie-000000000010-chord.jpg",
+        "textsim": "assets/images/pie-000000000010-textsim.jpg",
+        "cascade": "assets/images/pie-000000000010-cascade.jpg"
+      },
+      "metrics": {
+        "chord": {
+          "psnr_unedit": 17.699101332918097,
+          "mse_unedit_x1e3": 16.985950991511345,
+          "lpips_unedit_x1e3": 168.30193996429443,
+          "clip_whole": 31.734636306762695,
+          "clip_edited": 20.961956024169922
+        },
+        "textsim": {
+          "psnr_unedit": 22.617318015822537,
+          "mse_unedit_x1e3": 5.473538767546415,
+          "lpips_unedit_x1e3": 108.43382030725479,
+          "clip_whole": 34.849273681640625,
+          "clip_edited": 22.056028366088867
+        },
+        "cascade": {
+          "psnr_unedit": 22.59605544877832,
+          "mse_unedit_x1e3": 5.5004023015499115,
+          "lpips_unedit_x1e3": 105.13172298669815,
+          "clip_whole": 35.332035064697266,
+          "clip_edited": 21.892642974853516
+        }
+      },
+      "delta": {
+        "psnr_unedit": 4.896954115860222,
+        "mse_unedit_x1e3": -11.485548689961433,
+        "lpips_unedit_x1e3": -63.17021697759628,
+        "clip_whole": 3.5973987579345703,
+        "clip_edited": 0.9306869506835938
+      }
+    },
+    {
+      "id": "114000000001",
+      "dataset": "PIE",
+      "category": "Object replacement",
+      "title": "Change the animal from bear to rabbit",
+      "instruction": "Change the animal from bear to rabbit",
+      "sourcePrompt": "a cartoon bear playing golf on a green field",
+      "targetPrompt": "a cartoon rabbit playing golf on a green field",
+      "change": {
+        "before": "bear",
+        "after": "rabbit"
+      },
+      "images": {
+        "source": "assets/images/pie-114000000001-source.jpg",
+        "chord": "assets/images/pie-114000000001-chord.jpg",
+        "textsim": "assets/images/pie-114000000001-textsim.jpg",
+        "cascade": "assets/images/pie-114000000001-cascade.jpg"
+      },
+      "metrics": {
+        "chord": {
+          "psnr_unedit": 22.308172767301436,
+          "mse_unedit_x1e3": 5.8773658238351345,
+          "lpips_unedit_x1e3": 94.00088340044022,
+          "clip_whole": 33.951473236083984,
+          "clip_edited": 21.154829025268555
+        },
+        "textsim": {
+          "psnr_unedit": 25.850805962613865,
+          "mse_unedit_x1e3": 2.5996770709753036,
+          "lpips_unedit_x1e3": 55.2147813141346,
+          "clip_whole": 35.13582229614258,
+          "clip_edited": 22.06033706665039
+        },
+        "cascade": {
+          "psnr_unedit": 26.21649480160995,
+          "mse_unedit_x1e3": 2.389739267528057,
+          "lpips_unedit_x1e3": 55.308349430561066,
+          "clip_whole": 34.18920135498047,
+          "clip_edited": 23.53062629699707
+        }
+      },
+      "delta": {
+        "psnr_unedit": 3.908322034308515,
+        "mse_unedit_x1e3": -3.4876265563070774,
+        "lpips_unedit_x1e3": -38.69253396987915,
+        "clip_whole": 0.23772811889648438,
+        "clip_edited": 2.3757972717285156
+      }
+    },
+    {
+      "id": "000000000056",
+      "dataset": "PIE",
+      "category": "Mixed edits",
+      "title": "Replace the meerkat with a lion",
+      "instruction": "Replace the meerkat with a lion",
+      "sourcePrompt": "a meerkat puppy wrapped in a blue towel",
+      "targetPrompt": "a lion puppy wrapped in a blue towel",
+      "change": {
+        "before": "meerkat",
+        "after": "lion"
+      },
+      "images": {
+        "source": "assets/images/pie-000000000056-source.jpg",
+        "chord": "assets/images/pie-000000000056-chord.jpg",
+        "textsim": "assets/images/pie-000000000056-textsim.jpg",
+        "cascade": "assets/images/pie-000000000056-cascade.jpg"
+      },
+      "metrics": {
+        "chord": {
+          "psnr_unedit": 20.414452465617053,
+          "mse_unedit_x1e3": 9.089808911085129,
+          "lpips_unedit_x1e3": 97.09228575229645,
+          "clip_whole": 27.983898162841797,
+          "clip_edited": 24.84665870666504
+        },
+        "textsim": {
+          "psnr_unedit": 22.109074937197413,
+          "mse_unedit_x1e3": 6.153079215437174,
+          "lpips_unedit_x1e3": 77.28635519742966,
+          "clip_whole": 30.405467987060547,
+          "clip_edited": 27.594497680664062
+        },
+        "cascade": {
+          "psnr_unedit": 22.08585600503295,
+          "mse_unedit_x1e3": 6.18606386706233,
+          "lpips_unedit_x1e3": 82.29478448629379,
+          "clip_whole": 30.338085174560547,
+          "clip_edited": 28.335750579833984
+        }
+      },
+      "delta": {
+        "psnr_unedit": 1.6714035394158984,
+        "mse_unedit_x1e3": -2.9037450440227985,
+        "lpips_unedit_x1e3": -14.797501266002655,
+        "clip_whole": 2.35418701171875,
+        "clip_edited": 3.4890918731689453
+      }
+    },
+    {
+      "id": "000000000019",
+      "dataset": "PIE",
+      "category": "Mixed edits",
+      "title": "Change the animal from tiger to cat",
+      "instruction": "Change the animal from tiger to cat",
+      "sourcePrompt": "white tiger on brown ground",
+      "targetPrompt": "white cat on brown ground",
+      "change": {
+        "before": "tiger",
+        "after": "cat"
+      },
+      "images": {
+        "source": "assets/images/pie-000000000019-source.jpg",
+        "chord": "assets/images/pie-000000000019-chord.jpg",
+        "textsim": "assets/images/pie-000000000019-textsim.jpg",
+        "cascade": "assets/images/pie-000000000019-cascade.jpg"
+      },
+      "metrics": {
+        "chord": {
+          "psnr_unedit": 17.746332934337666,
+          "mse_unedit_x1e3": 16.802221536636353,
+          "lpips_unedit_x1e3": 165.1463657617569,
+          "clip_whole": 26.902896881103516,
+          "clip_edited": 23.665897369384766
+        },
+        "textsim": {
+          "psnr_unedit": 19.804068947356527,
+          "mse_unedit_x1e3": 10.461479425430298,
+          "lpips_unedit_x1e3": 136.06460392475128,
+          "clip_whole": 28.138334274291992,
+          "clip_edited": 25.501506805419922
+        },
+        "cascade": {
+          "psnr_unedit": 19.3150009202757,
+          "mse_unedit_x1e3": 11.708463542163372,
+          "lpips_unedit_x1e3": 138.96960020065308,
+          "clip_whole": 28.064990997314453,
+          "clip_edited": 25.46677589416504
+        }
+      },
+      "delta": {
+        "psnr_unedit": 1.5686679859380348,
+        "mse_unedit_x1e3": -5.0937579944729805,
+        "lpips_unedit_x1e3": -26.17676556110382,
+        "clip_whole": 1.1620941162109375,
+        "clip_edited": 1.8008785247802734
+      }
+    },
+    {
+      "id": "000000000011",
+      "dataset": "PIE",
+      "category": "Mixed edits",
+      "title": "Change the color of the bird to red",
+      "instruction": "Change the color of the bird to red",
+      "sourcePrompt": "a colorful bird standing on a branch",
+      "targetPrompt": "a red bird standing on a branch",
+      "change": {
+        "before": "colorful",
+        "after": "red"
+      },
+      "images": {
+        "source": "assets/images/pie-000000000011-source.jpg",
+        "chord": "assets/images/pie-000000000011-chord.jpg",
+        "textsim": "assets/images/pie-000000000011-textsim.jpg",
+        "cascade": "assets/images/pie-000000000011-cascade.jpg"
+      },
+      "metrics": {
+        "chord": {
+          "psnr_unedit": 26.320696887454254,
+          "mse_unedit_x1e3": 2.3330836556851864,
+          "lpips_unedit_x1e3": 73.67189228534698,
+          "clip_whole": 25.30704689025879,
+          "clip_edited": 25.112640380859375
+        },
+        "textsim": {
+          "psnr_unedit": 28.87637178585284,
+          "mse_unedit_x1e3": 1.2952774995937943,
+          "lpips_unedit_x1e3": 45.35096883773804,
+          "clip_whole": 25.449848175048828,
+          "clip_edited": 25.383230209350586
+        },
+        "cascade": {
+          "psnr_unedit": 28.86636161521833,
+          "mse_unedit_x1e3": 1.298266462981701,
+          "lpips_unedit_x1e3": 45.95908895134926,
+          "clip_whole": 25.53524398803711,
+          "clip_edited": 25.318761825561523
+        }
+      },
+      "delta": {
+        "psnr_unedit": 2.545664727764077,
+        "mse_unedit_x1e3": -1.0348171927034855,
+        "lpips_unedit_x1e3": -27.712803333997726,
+        "clip_whole": 0.2281970977783203,
+        "clip_edited": 0.20612144470214844
+      }
+    },
+    {
+      "id": "000000000120",
+      "dataset": "PIE",
+      "category": "Mixed edits",
+      "title": "Change the color of the woman's hair from brown to blue",
+      "instruction": "Change the color of the woman's hair from brown to blue",
+      "sourcePrompt": "woman with brown hair",
+      "targetPrompt": "woman with blue hair",
+      "change": {
+        "before": "brown",
+        "after": "blue"
+      },
+      "images": {
+        "source": "assets/images/pie-000000000120-source.jpg",
+        "chord": "assets/images/pie-000000000120-chord.jpg",
+        "textsim": "assets/images/pie-000000000120-textsim.jpg",
+        "cascade": "assets/images/pie-000000000120-cascade.jpg"
+      },
+      "metrics": {
+        "chord": {
+          "psnr_unedit": 25.24677254557844,
+          "mse_unedit_x1e3": 2.987602027133107,
+          "lpips_unedit_x1e3": 56.93419277667999,
+          "clip_whole": 25.61723518371582,
+          "clip_edited": 26.931936264038086
+        },
+        "textsim": {
+          "psnr_unedit": 27.271252198036862,
+          "mse_unedit_x1e3": 1.8744539702311158,
+          "lpips_unedit_x1e3": 36.4728681743145,
+          "clip_whole": 28.53522300720215,
+          "clip_edited": 27.2272891998291
+        },
+        "cascade": {
+          "psnr_unedit": 27.148600061939483,
+          "mse_unedit_x1e3": 1.9281463464722037,
+          "lpips_unedit_x1e3": 36.66244074702263,
+          "clip_whole": 28.50567054748535,
+          "clip_edited": 27.20054054260254
+        }
+      },
+      "delta": {
+        "psnr_unedit": 1.9018275163610419,
+        "mse_unedit_x1e3": -1.0594556806609035,
+        "lpips_unedit_x1e3": -20.271752029657364,
+        "clip_whole": 2.8884353637695312,
+        "clip_edited": 0.2686042785644531
+      }
+    },
+    {
+      "id": "621000000002",
+      "dataset": "PIE",
+      "category": "Color changes",
+      "title": "Change the bird's color to green",
+      "instruction": "Change the bird's color to green",
+      "sourcePrompt": "a black bird with a yellow beak and yellow feet",
+      "targetPrompt": "a green bird with a yellow beak and yellow feet",
+      "change": {
+        "before": "black",
+        "after": "green"
+      },
+      "images": {
+        "source": "assets/images/pie-621000000002-source.jpg",
+        "chord": "assets/images/pie-621000000002-chord.jpg",
+        "textsim": "assets/images/pie-621000000002-textsim.jpg",
+        "cascade": "assets/images/pie-621000000002-cascade.jpg"
+      },
+      "metrics": {
+        "chord": {
+          "psnr_unedit": 24.36141914492881,
+          "mse_unedit_x1e3": 3.6631785333156586,
+          "lpips_unedit_x1e3": 75.36859065294266,
+          "clip_whole": 24.117813110351562,
+          "clip_edited": 24.238765716552734
+        },
+        "textsim": {
+          "psnr_unedit": 25.474450565384767,
+          "mse_unedit_x1e3": 2.835012273862958,
+          "lpips_unedit_x1e3": 64.84532356262207,
+          "clip_whole": 24.84137725830078,
+          "clip_edited": 24.688833236694336
+        },
+        "cascade": {
+          "psnr_unedit": 24.576866564769237,
+          "mse_unedit_x1e3": 3.485887311398983,
+          "lpips_unedit_x1e3": 67.99378246068954,
+          "clip_whole": 24.975770950317383,
+          "clip_edited": 24.576435089111328
+        }
+      },
+      "delta": {
+        "psnr_unedit": 0.2154474198404266,
+        "mse_unedit_x1e3": -0.17729122191667557,
+        "lpips_unedit_x1e3": -7.374808192253113,
+        "clip_whole": 0.8579578399658203,
+        "clip_edited": 0.33766937255859375
+      }
+    },
+    {
+      "id": "621000000004",
+      "dataset": "PIE",
+      "category": "Color changes",
+      "title": "Change the kitten's color to yellow",
+      "instruction": "Change the kitten's color to yellow",
+      "sourcePrompt": "a white kitten sitting on a leopard print blanket",
+      "targetPrompt": "a yellow kitten sitting on a leopard print blanket",
+      "change": {
+        "before": "white",
+        "after": "yellow"
+      },
+      "images": {
+        "source": "assets/images/pie-621000000004-source.jpg",
+        "chord": "assets/images/pie-621000000004-chord.jpg",
+        "textsim": "assets/images/pie-621000000004-textsim.jpg",
+        "cascade": "assets/images/pie-621000000004-cascade.jpg"
+      },
+      "metrics": {
+        "chord": {
+          "psnr_unedit": 25.25078611382378,
+          "mse_unedit_x1e3": 2.984842285513878,
+          "lpips_unedit_x1e3": 91.92906320095062,
+          "clip_whole": 27.957361221313477,
+          "clip_edited": 21.334775924682617
+        },
+        "textsim": {
+          "psnr_unedit": 26.231381886867062,
+          "mse_unedit_x1e3": 2.3815615568310022,
+          "lpips_unedit_x1e3": 86.97622269392014,
+          "clip_whole": 26.14922523498535,
+          "clip_edited": 22.49464988708496
+        },
+        "cascade": {
+          "psnr_unedit": 26.232160217314025,
+          "mse_unedit_x1e3": 2.3811347782611847,
+          "lpips_unedit_x1e3": 85.92334389686584,
+          "clip_whole": 26.40555763244629,
+          "clip_edited": 22.588598251342773
+        }
+      },
+      "delta": {
+        "psnr_unedit": 0.9813741034902463,
+        "mse_unedit_x1e3": -0.6037075072526932,
+        "lpips_unedit_x1e3": -6.005719304084778,
+        "clip_whole": -1.5518035888671875,
+        "clip_edited": 1.2538223266601562
+      }
+    },
+    {
+      "id": "624000000002",
+      "dataset": "PIE",
+      "category": "Color changes",
+      "title": "Change the sky's color to gray",
+      "instruction": "Change the sky's color to gray",
+      "sourcePrompt": "snow covered trees in a field near a river with blue sky",
+      "targetPrompt": "snow covered trees in a field near a river with gray sky",
+      "change": {
+        "before": "blue",
+        "after": "gray"
+      },
+      "images": {
+        "source": "assets/images/pie-624000000002-source.jpg",
+        "chord": "assets/images/pie-624000000002-chord.jpg",
+        "textsim": "assets/images/pie-624000000002-textsim.jpg",
+        "cascade": "assets/images/pie-624000000002-cascade.jpg"
+      },
+      "metrics": {
+        "chord": {
+          "psnr_unedit": 19.804624564816606,
+          "mse_unedit_x1e3": 10.460141114890575,
+          "lpips_unedit_x1e3": 123.56153875589371,
+          "clip_whole": 27.46840476989746,
+          "clip_edited": 10.219769477844238
+        },
+        "textsim": {
+          "psnr_unedit": 20.371401774516386,
+          "mse_unedit_x1e3": 9.180362336337566,
+          "lpips_unedit_x1e3": 113.37307095527649,
+          "clip_whole": 27.015907287597656,
+          "clip_edited": 10.283656120300293
+        },
+        "cascade": {
+          "psnr_unedit": 20.24725437698375,
+          "mse_unedit_x1e3": 9.446579031646252,
+          "lpips_unedit_x1e3": 111.09988391399384,
+          "clip_whole": 27.082807540893555,
+          "clip_edited": 11.563730239868164
+        }
+      },
+      "delta": {
+        "psnr_unedit": 0.44262981216714437,
+        "mse_unedit_x1e3": -1.0135620832443237,
+        "lpips_unedit_x1e3": -12.461654841899872,
+        "clip_whole": -0.38559722900390625,
+        "clip_edited": 1.3439607620239258
+      }
+    },
+    {
+      "id": "612000000003",
+      "dataset": "PIE",
+      "category": "Color changes",
+      "title": "Change the color of the umbrella from pink to yellow",
+      "instruction": "Change the color of the umbrella from pink to yellow",
+      "sourcePrompt": "a girl with a pink umbrella in the rain",
+      "targetPrompt": "a girl with a yellow umbrella in the rain",
+      "change": {
+        "before": "pink",
+        "after": "yellow"
+      },
+      "images": {
+        "source": "assets/images/pie-612000000003-source.jpg",
+        "chord": "assets/images/pie-612000000003-chord.jpg",
+        "textsim": "assets/images/pie-612000000003-textsim.jpg",
+        "cascade": "assets/images/pie-612000000003-cascade.jpg"
+      },
+      "metrics": {
+        "chord": {
+          "psnr_unedit": 19.419420939103752,
+          "mse_unedit_x1e3": 11.430307291448116,
+          "lpips_unedit_x1e3": 140.48181474208832,
+          "clip_whole": 26.611936569213867,
+          "clip_edited": 16.940044403076172
+        },
+        "textsim": {
+          "psnr_unedit": 21.25526863699524,
+          "mse_unedit_x1e3": 7.489850278943777,
+          "lpips_unedit_x1e3": 110.7027530670166,
+          "clip_whole": 28.135934829711914,
+          "clip_edited": 19.22460174560547
+        },
+        "cascade": {
+          "psnr_unedit": 21.107500274193658,
+          "mse_unedit_x1e3": 7.749076932668686,
+          "lpips_unedit_x1e3": 110.24355888366699,
+          "clip_whole": 29.222810745239258,
+          "clip_edited": 19.847705841064453
+        }
+      },
+      "delta": {
+        "psnr_unedit": 1.6880793350899062,
+        "mse_unedit_x1e3": -3.6812303587794304,
+        "lpips_unedit_x1e3": -30.238255858421326,
+        "clip_whole": 2.6108741760253906,
+        "clip_edited": 2.9076614379882812
+      }
+    },
+    {
+      "id": "Lettuce_243_soil",
+      "dataset": "CropWeed",
+      "category": "Soil appearance",
+      "title": "Lettuce \u00b7 sandy-looking \u2192 dark brown",
+      "instruction": "Change only the visible soil appearance to dark brown soil",
+      "sourcePrompt": "A Lettuce plant with several clearly visible leaves, growing in sandy-looking soil, under soft diffuse daylight.",
+      "targetPrompt": "A Lettuce plant with several clearly visible leaves, growing in dark brown soil, under soft diffuse daylight.",
+      "change": {
+        "before": "sandy-looking",
+        "after": "dark brown"
+      },
+      "images": {
+        "source": "assets/images/cropweed-Lettuce_243_soil-source.png",
+        "chord": "assets/images/cropweed-Lettuce_243_soil-chord.png",
+        "textsim": "assets/images/cropweed-Lettuce_243_soil-textsim.png",
+        "cascade": "assets/images/cropweed-Lettuce_243_soil-cascade.png"
+      },
+      "metrics": {
+        "chord": {
+          "psnr_unedit": 23.690808923617304,
+          "mse_unedit_x1e3": 4.274832550436258,
+          "lpips_unedit_x1e3": 92.6661267876625,
+          "clip_whole": 26.240903854370117,
+          "clip_edited": 20.657712936401367
+        },
+        "textsim": {
+          "psnr_unedit": 24.330396615131882,
+          "mse_unedit_x1e3": 3.689439035952091,
+          "lpips_unedit_x1e3": 90.34237265586853,
+          "clip_whole": 29.0930118560791,
+          "clip_edited": 25.747230529785156
+        },
+        "cascade": {
+          "psnr_unedit": 24.052268058465884,
+          "mse_unedit_x1e3": 3.933446016162634,
+          "lpips_unedit_x1e3": 91.91742539405823,
+          "clip_whole": 28.556547164916992,
+          "clip_edited": 26.74646759033203
+        }
+      },
+      "delta": {
+        "psnr_unedit": 0.3614591348485803,
+        "mse_unedit_x1e3": -0.3413865342736244,
+        "lpips_unedit_x1e3": -0.7487013936042786,
+        "clip_whole": 2.315643310546875,
+        "clip_edited": 6.088754653930664
+      }
+    },
+    {
+      "id": "Purslane_211_soil",
+      "dataset": "CropWeed",
+      "category": "Soil appearance",
+      "title": "Purslane \u00b7 gray-brown \u2192 light brown",
+      "instruction": "Change only the visible soil appearance to light brown soil",
+      "sourcePrompt": "A Purslane plant with several clearly visible leaves, growing in gray-brown soil, under soft diffuse daylight.",
+      "targetPrompt": "A Purslane plant with several clearly visible leaves, growing in light brown soil, under soft diffuse daylight.",
+      "change": {
+        "before": "gray-brown",
+        "after": "light brown"
+      },
+      "images": {
+        "source": "assets/images/cropweed-Purslane_211_soil-source.png",
+        "chord": "assets/images/cropweed-Purslane_211_soil-chord.png",
+        "textsim": "assets/images/cropweed-Purslane_211_soil-textsim.png",
+        "cascade": "assets/images/cropweed-Purslane_211_soil-cascade.png"
+      },
+      "metrics": {
+        "chord": {
+          "psnr_unedit": 24.451760207566675,
+          "mse_unedit_x1e3": 3.587764920666814,
+          "lpips_unedit_x1e3": 97.0539003610611,
+          "clip_whole": 33.603580474853516,
+          "clip_edited": 21.300962448120117
+        },
+        "textsim": {
+          "psnr_unedit": 25.086952491651378,
+          "mse_unedit_x1e3": 3.0995935667306185,
+          "lpips_unedit_x1e3": 84.29037034511566,
+          "clip_whole": 35.624366760253906,
+          "clip_edited": 29.428281784057617
+        },
+        "cascade": {
+          "psnr_unedit": 25.038506944168798,
+          "mse_unedit_x1e3": 3.1343630980700254,
+          "lpips_unedit_x1e3": 83.29328149557114,
+          "clip_whole": 34.63203430175781,
+          "clip_edited": 29.040739059448242
+        }
+      },
+      "delta": {
+        "psnr_unedit": 0.5867467366021231,
+        "mse_unedit_x1e3": -0.4534018225967884,
+        "lpips_unedit_x1e3": -13.76061886548996,
+        "clip_whole": 1.0284538269042969,
+        "clip_edited": 7.739776611328125
+      }
+    },
+    {
+      "id": "Turnip_13_soil",
+      "dataset": "CropWeed",
+      "category": "Soil appearance",
+      "title": "Turnip \u00b7 sandy-looking \u2192 dark brown",
+      "instruction": "Change only the visible soil appearance to dark brown soil",
+      "sourcePrompt": "A Turnip plant with many clearly visible leaves, growing in sandy-looking soil, under soft diffuse daylight.",
+      "targetPrompt": "A Turnip plant with many clearly visible leaves, growing in dark brown soil, under soft diffuse daylight.",
+      "change": {
+        "before": "sandy-looking",
+        "after": "dark brown"
+      },
+      "images": {
+        "source": "assets/images/cropweed-Turnip_13_soil-source.png",
+        "chord": "assets/images/cropweed-Turnip_13_soil-chord.png",
+        "textsim": "assets/images/cropweed-Turnip_13_soil-textsim.png",
+        "cascade": "assets/images/cropweed-Turnip_13_soil-cascade.png"
+      },
+      "metrics": {
+        "chord": {
+          "psnr_unedit": 20.686853828618943,
+          "mse_unedit_x1e3": 8.53718351572752,
+          "lpips_unedit_x1e3": 113.50764334201813,
+          "clip_whole": 28.5673885345459,
+          "clip_edited": 15.786687850952148
+        },
+        "textsim": {
+          "psnr_unedit": 22.285003804159764,
+          "mse_unedit_x1e3": 5.908804479986429,
+          "lpips_unedit_x1e3": 98.82970154285431,
+          "clip_whole": 29.291257858276367,
+          "clip_edited": 19.713726043701172
+        },
+        "cascade": {
+          "psnr_unedit": 22.176078733732496,
+          "mse_unedit_x1e3": 6.058876868337393,
+          "lpips_unedit_x1e3": 95.9969013929367,
+          "clip_whole": 29.663949966430664,
+          "clip_edited": 20.590028762817383
+        }
+      },
+      "delta": {
+        "psnr_unedit": 1.4892249051135522,
+        "mse_unedit_x1e3": -2.478306647390127,
+        "lpips_unedit_x1e3": -17.51074194908142,
+        "clip_whole": 1.0965614318847656,
+        "clip_edited": 4.803340911865234
+      }
+    },
+    {
+      "id": "Lettuce_432_soil",
+      "dataset": "CropWeed",
+      "category": "Soil appearance",
+      "title": "Lettuce \u00b7 sandy-looking \u2192 dark brown",
+      "instruction": "Change only the visible soil appearance to dark brown soil",
+      "sourcePrompt": "A Lettuce plant with several clearly visible leaves, growing in sandy-looking soil, under soft diffuse daylight.",
+      "targetPrompt": "A Lettuce plant with several clearly visible leaves, growing in dark brown soil, under soft diffuse daylight.",
+      "change": {
+        "before": "sandy-looking",
+        "after": "dark brown"
+      },
+      "images": {
+        "source": "assets/images/cropweed-Lettuce_432_soil-source.png",
+        "chord": "assets/images/cropweed-Lettuce_432_soil-chord.png",
+        "textsim": "assets/images/cropweed-Lettuce_432_soil-textsim.png",
+        "cascade": "assets/images/cropweed-Lettuce_432_soil-cascade.png"
+      },
+      "metrics": {
+        "chord": {
+          "psnr_unedit": 23.330187462983506,
+          "mse_unedit_x1e3": 4.6449522487819195,
+          "lpips_unedit_x1e3": 100.08835047483444,
+          "clip_whole": 28.1973876953125,
+          "clip_edited": 17.7923526763916
+        },
+        "textsim": {
+          "psnr_unedit": 23.789876966424764,
+          "mse_unedit_x1e3": 4.178422037512064,
+          "lpips_unedit_x1e3": 98.07327389717102,
+          "clip_whole": 28.59952163696289,
+          "clip_edited": 21.72648811340332
+        },
+        "cascade": {
+          "psnr_unedit": 23.768446296585942,
+          "mse_unedit_x1e3": 4.19909181073308,
+          "lpips_unedit_x1e3": 97.30489552021027,
+          "clip_whole": 29.04178237915039,
+          "clip_edited": 21.99788475036621
+        }
+      },
+      "delta": {
+        "psnr_unedit": 0.4382588336024362,
+        "mse_unedit_x1e3": -0.44586043804883957,
+        "lpips_unedit_x1e3": -2.783454954624176,
+        "clip_whole": 0.8443946838378906,
+        "clip_edited": 4.205532073974609
+      }
+    },
+    {
+      "id": "Beet_753_weather",
+      "dataset": "CropWeed",
+      "category": "Lighting / weather",
+      "title": "Beet \u00b7 dim or shaded \u2192 soft diffuse",
+      "instruction": "Change only the scene lighting to soft diffuse daylight",
+      "sourcePrompt": "A Beet plant with several clearly visible leaves, growing in gray-brown soil, under dim or shaded daylight.",
+      "targetPrompt": "A Beet plant with several clearly visible leaves, growing in gray-brown soil, under soft diffuse daylight.",
+      "change": {
+        "before": "dim or shaded",
+        "after": "soft diffuse"
+      },
+      "images": {
+        "source": "assets/images/cropweed-Beet_753_weather-source.png",
+        "chord": "assets/images/cropweed-Beet_753_weather-chord.png",
+        "textsim": "assets/images/cropweed-Beet_753_weather-textsim.png",
+        "cascade": "assets/images/cropweed-Beet_753_weather-cascade.png"
+      },
+      "metrics": {
+        "chord": {
+          "psnr_unedit": 22.652803716044136,
+          "mse_unedit_x1e3": 5.4289973340928555,
+          "lpips_unedit_x1e3": 86.15224063396454,
+          "clip_whole": 24.499454498291016,
+          "clip_edited": 14.698518753051758
+        },
+        "textsim": {
+          "psnr_unedit": 28.059422699569478,
+          "mse_unedit_x1e3": 1.5633554430678487,
+          "lpips_unedit_x1e3": 79.65472340583801,
+          "clip_whole": 27.716123580932617,
+          "clip_edited": 15.746624946594238
+        },
+        "cascade": {
+          "psnr_unedit": 28.384372048581305,
+          "mse_unedit_x1e3": 1.450650510378182,
+          "lpips_unedit_x1e3": 80.59167861938477,
+          "clip_whole": 28.20171356201172,
+          "clip_edited": 16.24527359008789
+        }
+      },
+      "delta": {
+        "psnr_unedit": 5.731568332537169,
+        "mse_unedit_x1e3": -3.9783468237146735,
+        "lpips_unedit_x1e3": -5.560562014579773,
+        "clip_whole": 3.702259063720703,
+        "clip_edited": 1.5467548370361328
+      }
+    },
+    {
+      "id": "Weed_148_weather",
+      "dataset": "CropWeed",
+      "category": "Lighting / weather",
+      "title": "Weed \u00b7 soft diffuse daylight \u2192 bright direct sunlight",
+      "instruction": "Change only the scene lighting to bright direct sunlight",
+      "sourcePrompt": "A Weed plant with several clearly visible leaves, growing in gray-brown soil, under soft diffuse daylight.",
+      "targetPrompt": "A Weed plant with several clearly visible leaves, growing in gray-brown soil, under bright direct sunlight.",
+      "change": {
+        "before": "soft diffuse daylight",
+        "after": "bright direct sunlight"
+      },
+      "images": {
+        "source": "assets/images/cropweed-Weed_148_weather-source.png",
+        "chord": "assets/images/cropweed-Weed_148_weather-chord.png",
+        "textsim": "assets/images/cropweed-Weed_148_weather-textsim.png",
+        "cascade": "assets/images/cropweed-Weed_148_weather-cascade.png"
+      },
+      "metrics": {
+        "chord": {
+          "psnr_unedit": 22.72940951936151,
+          "mse_unedit_x1e3": 5.334074143320322,
+          "lpips_unedit_x1e3": 74.91511851549149,
+          "clip_whole": 24.407079696655273,
+          "clip_edited": 18.559499740600586
+        },
+        "textsim": {
+          "psnr_unedit": 24.525338414521627,
+          "mse_unedit_x1e3": 3.5274929832667112,
+          "lpips_unedit_x1e3": 61.63536757230759,
+          "clip_whole": 28.34196662902832,
+          "clip_edited": 22.697954177856445
+        },
+        "cascade": {
+          "psnr_unedit": 24.21365940678622,
+          "mse_unedit_x1e3": 3.7899550516158342,
+          "lpips_unedit_x1e3": 61.979133635759354,
+          "clip_whole": 28.590219497680664,
+          "clip_edited": 22.480545043945312
+        }
+      },
+      "delta": {
+        "psnr_unedit": 1.4842498874247099,
+        "mse_unedit_x1e3": -1.5441190917044878,
+        "lpips_unedit_x1e3": -12.935984879732132,
+        "clip_whole": 4.183139801025391,
+        "clip_edited": 3.9210453033447266
+      }
+    },
+    {
+      "id": "Lettuce_34_weather",
+      "dataset": "CropWeed",
+      "category": "Lighting / weather",
+      "title": "Lettuce \u00b7 soft diffuse daylight \u2192 bright direct sunlight",
+      "instruction": "Change only the scene lighting to bright direct sunlight",
+      "sourcePrompt": "A Lettuce plant with several clearly visible leaves, growing in gray-brown soil, under soft diffuse daylight.",
+      "targetPrompt": "A Lettuce plant with several clearly visible leaves, growing in gray-brown soil, under bright direct sunlight.",
+      "change": {
+        "before": "soft diffuse daylight",
+        "after": "bright direct sunlight"
+      },
+      "images": {
+        "source": "assets/images/cropweed-Lettuce_34_weather-source.png",
+        "chord": "assets/images/cropweed-Lettuce_34_weather-chord.png",
+        "textsim": "assets/images/cropweed-Lettuce_34_weather-textsim.png",
+        "cascade": "assets/images/cropweed-Lettuce_34_weather-cascade.png"
+      },
+      "metrics": {
+        "chord": {
+          "psnr_unedit": 22.424978631045413,
+          "mse_unedit_x1e3": 5.721397697925568,
+          "lpips_unedit_x1e3": 104.741171002388,
+          "clip_whole": 22.98361587524414,
+          "clip_edited": 14.474214553833008
+        },
+        "textsim": {
+          "psnr_unedit": 23.588277470043238,
+          "mse_unedit_x1e3": 4.376956727355719,
+          "lpips_unedit_x1e3": 101.16751492023468,
+          "clip_whole": 25.388864517211914,
+          "clip_edited": 16.023571014404297
+        },
+        "cascade": {
+          "psnr_unedit": 23.57902430079687,
+          "mse_unedit_x1e3": 4.386292304843664,
+          "lpips_unedit_x1e3": 101.1427491903305,
+          "clip_whole": 24.60149574279785,
+          "clip_edited": 18.25460433959961
+        }
+      },
+      "delta": {
+        "psnr_unedit": 1.1540456697514578,
+        "mse_unedit_x1e3": -1.3351053930819035,
+        "lpips_unedit_x1e3": -3.598421812057495,
+        "clip_whole": 1.617879867553711,
+        "clip_edited": 3.7803897857666016
+      }
+    },
+    {
+      "id": "PalmerAmaranth_200_weather",
+      "dataset": "CropWeed",
+      "category": "Lighting / weather",
+      "title": "PalmerAmaranth \u00b7 soft diffuse daylight \u2192 bright direct sunlight",
+      "instruction": "Change only the scene lighting to bright direct sunlight",
+      "sourcePrompt": "A PalmerAmaranth plant with several clearly visible leaves, growing in gray-brown soil, under soft diffuse daylight.",
+      "targetPrompt": "A PalmerAmaranth plant with several clearly visible leaves, growing in gray-brown soil, under bright direct sunlight.",
+      "change": {
+        "before": "soft diffuse daylight",
+        "after": "bright direct sunlight"
+      },
+      "images": {
+        "source": "assets/images/cropweed-PalmerAmaranth_200_weather-source.png",
+        "chord": "assets/images/cropweed-PalmerAmaranth_200_weather-chord.png",
+        "textsim": "assets/images/cropweed-PalmerAmaranth_200_weather-textsim.png",
+        "cascade": "assets/images/cropweed-PalmerAmaranth_200_weather-cascade.png"
+      },
+      "metrics": {
+        "chord": {
+          "psnr_unedit": 24.142157399862395,
+          "mse_unedit_x1e3": 3.852869151160121,
+          "lpips_unedit_x1e3": 87.69376575946808,
+          "clip_whole": 26.882091522216797,
+          "clip_edited": 10.699283599853516
+        },
+        "textsim": {
+          "psnr_unedit": 25.53519599604625,
+          "mse_unedit_x1e3": 2.7956345584243536,
+          "lpips_unedit_x1e3": 79.64163273572922,
+          "clip_whole": 28.294906616210938,
+          "clip_edited": 12.657814025878906
+        },
+        "cascade": {
+          "psnr_unedit": 25.431623834357456,
+          "mse_unedit_x1e3": 2.8631072491407394,
+          "lpips_unedit_x1e3": 80.02793788909912,
+          "clip_whole": 28.683502197265625,
+          "clip_edited": 13.692056655883789
+        }
+      },
+      "delta": {
+        "psnr_unedit": 1.2894664344950613,
+        "mse_unedit_x1e3": -0.9897619020193815,
+        "lpips_unedit_x1e3": -7.6658278703689575,
+        "clip_whole": 1.8014106750488281,
+        "clip_edited": 2.9927730560302734
+      }
+    },
+    {
+      "id": "Turnip_9_leaf_amount",
+      "dataset": "CropWeed",
+      "category": "Relative leaf amount",
+      "title": "Turnip \u00b7 several leaves, \u2192 fewer leaves than in the source image,",
+      "instruction": "Decrease the amount of clearly visible leaves on the main Turnip plant so it has fewer leaves than in the source image. Keep the result botanically plausible and preserve plant species and identity, lighting, soil appearance, viewpoint, and background. No exact leaf count is required",
+      "sourcePrompt": "A Turnip plant with several clearly visible leaves, growing in gray-brown soil, under soft diffuse daylight.",
+      "targetPrompt": "A Turnip plant with fewer clearly visible leaves than in the source image, growing in gray-brown soil, under soft diffuse daylight.",
+      "change": {
+        "before": "several leaves,",
+        "after": "fewer leaves than in the source image,"
+      },
+      "images": {
+        "source": "assets/images/cropweed-Turnip_9_leaf_amount-source.png",
+        "chord": "assets/images/cropweed-Turnip_9_leaf_amount-chord.png",
+        "textsim": "assets/images/cropweed-Turnip_9_leaf_amount-textsim.png",
+        "cascade": "assets/images/cropweed-Turnip_9_leaf_amount-cascade.png"
+      },
+      "metrics": {
+        "chord": {
+          "psnr_unedit": 23.90212316215596,
+          "mse_unedit_x1e3": 4.071811679750681,
+          "lpips_unedit_x1e3": 102.86161303520203,
+          "clip_whole": 25.724464416503906,
+          "clip_edited": 23.404298782348633
+        },
+        "textsim": {
+          "psnr_unedit": 24.501810050477005,
+          "mse_unedit_x1e3": 3.546655410900712,
+          "lpips_unedit_x1e3": 95.31648457050323,
+          "clip_whole": 25.97031593322754,
+          "clip_edited": 26.905393600463867
+        },
+        "cascade": {
+          "psnr_unedit": 24.454330490505306,
+          "mse_unedit_x1e3": 3.5856422036886215,
+          "lpips_unedit_x1e3": 94.37967836856842,
+          "clip_whole": 25.821229934692383,
+          "clip_edited": 26.38767433166504
+        }
+      },
+      "delta": {
+        "psnr_unedit": 0.5522073283493469,
+        "mse_unedit_x1e3": -0.4861694760620594,
+        "lpips_unedit_x1e3": -8.481934666633606,
+        "clip_whole": 0.09676551818847656,
+        "clip_edited": 2.9833755493164062
+      }
+    },
+    {
+      "id": "Smartweed_375_leaf_amount",
+      "dataset": "CropWeed",
+      "category": "Relative leaf amount",
+      "title": "Smartweed \u00b7 several leaves, \u2192 fewer leaves than in the source image,",
+      "instruction": "Decrease the amount of clearly visible leaves on the main Smartweed plant so it has fewer leaves than in the source image. Keep the result botanically plausible and preserve plant species and identity, lighting, soil appearance, viewpoint, and background. No exact leaf count is required",
+      "sourcePrompt": "A Smartweed plant with several clearly visible leaves, growing in gray-brown soil, under dim or shaded daylight.",
+      "targetPrompt": "A Smartweed plant with fewer clearly visible leaves than in the source image, growing in gray-brown soil, under dim or shaded daylight.",
+      "change": {
+        "before": "several leaves,",
+        "after": "fewer leaves than in the source image,"
+      },
+      "images": {
+        "source": "assets/images/cropweed-Smartweed_375_leaf_amount-source.png",
+        "chord": "assets/images/cropweed-Smartweed_375_leaf_amount-chord.png",
+        "textsim": "assets/images/cropweed-Smartweed_375_leaf_amount-textsim.png",
+        "cascade": "assets/images/cropweed-Smartweed_375_leaf_amount-cascade.png"
+      },
+      "metrics": {
+        "chord": {
+          "psnr_unedit": 25.496599594799136,
+          "mse_unedit_x1e3": 2.8205905109643936,
+          "lpips_unedit_x1e3": 133.8355988264084,
+          "clip_whole": 22.463998794555664,
+          "clip_edited": 19.79906463623047
+        },
+        "textsim": {
+          "psnr_unedit": 25.66182243649633,
+          "mse_unedit_x1e3": 2.715299604460597,
+          "lpips_unedit_x1e3": 118.48445981740952,
+          "clip_whole": 24.308486938476562,
+          "clip_edited": 21.700674057006836
+        },
+        "cascade": {
+          "psnr_unedit": 25.67724320268525,
+          "mse_unedit_x1e3": 2.7056753169745207,
+          "lpips_unedit_x1e3": 119.9963167309761,
+          "clip_whole": 24.110788345336914,
+          "clip_edited": 22.583072662353516
+        }
+      },
+      "delta": {
+        "psnr_unedit": 0.18064360788611467,
+        "mse_unedit_x1e3": -0.11491519398987293,
+        "lpips_unedit_x1e3": -13.839282095432281,
+        "clip_whole": 1.64678955078125,
+        "clip_edited": 2.784008026123047
+      }
+    },
+    {
+      "id": "Carrot_477_leaf_amount",
+      "dataset": "CropWeed",
+      "category": "Relative leaf amount",
+      "title": "Carrot \u00b7 many leaves, \u2192 fewer leaves than in the source image,",
+      "instruction": "Decrease the amount of clearly visible leaves on the main Carrot plant so it has fewer leaves than in the source image. Keep the result botanically plausible and preserve plant species and identity, lighting, soil appearance, viewpoint, and background. No exact leaf count is required",
+      "sourcePrompt": "A Carrot plant with many clearly visible leaves, growing in gray-brown soil, under soft diffuse daylight.",
+      "targetPrompt": "A Carrot plant with fewer clearly visible leaves than in the source image, growing in gray-brown soil, under soft diffuse daylight.",
+      "change": {
+        "before": "many leaves,",
+        "after": "fewer leaves than in the source image,"
+      },
+      "images": {
+        "source": "assets/images/cropweed-Carrot_477_leaf_amount-source.png",
+        "chord": "assets/images/cropweed-Carrot_477_leaf_amount-chord.png",
+        "textsim": "assets/images/cropweed-Carrot_477_leaf_amount-textsim.png",
+        "cascade": "assets/images/cropweed-Carrot_477_leaf_amount-cascade.png"
+      },
+      "metrics": {
+        "chord": {
+          "psnr_unedit": 21.368961240608023,
+          "mse_unedit_x1e3": 7.296320050954819,
+          "lpips_unedit_x1e3": 94.47736293077469,
+          "clip_whole": 23.96888542175293,
+          "clip_edited": 21.863819122314453
+        },
+        "textsim": {
+          "psnr_unedit": 21.519746150342502,
+          "mse_unedit_x1e3": 7.047342602163553,
+          "lpips_unedit_x1e3": 88.17055076360703,
+          "clip_whole": 26.380847930908203,
+          "clip_edited": 24.243610382080078
+        },
+        "cascade": {
+          "psnr_unedit": 21.50281153859188,
+          "mse_unedit_x1e3": 7.074876222759485,
+          "lpips_unedit_x1e3": 87.91548013687134,
+          "clip_whole": 25.772005081176758,
+          "clip_edited": 24.433698654174805
+        }
+      },
+      "delta": {
+        "psnr_unedit": 0.13385029798385872,
+        "mse_unedit_x1e3": -0.22144382819533348,
+        "lpips_unedit_x1e3": -6.561882793903351,
+        "clip_whole": 1.8031196594238281,
+        "clip_edited": 2.5698795318603516
+      }
+    },
+    {
+      "id": "Lambsquarters_687_leaf_amount",
+      "dataset": "CropWeed",
+      "category": "Relative leaf amount",
+      "title": "Lambsquarters \u00b7 several leaves, \u2192 fewer leaves than in the source image,",
+      "instruction": "Decrease the amount of clearly visible leaves on the main Lambsquarters plant so it has fewer leaves than in the source image. Keep the result botanically plausible and preserve plant species and identity, lighting, soil appearance, viewpoint, and background. No exact leaf count is required",
+      "sourcePrompt": "A Lambsquarters plant with several clearly visible leaves, growing in gray-brown soil, under soft diffuse daylight.",
+      "targetPrompt": "A Lambsquarters plant with fewer clearly visible leaves than in the source image, growing in gray-brown soil, under soft diffuse daylight.",
+      "change": {
+        "before": "several leaves,",
+        "after": "fewer leaves than in the source image,"
+      },
+      "images": {
+        "source": "assets/images/cropweed-Lambsquarters_687_leaf_amount-source.png",
+        "chord": "assets/images/cropweed-Lambsquarters_687_leaf_amount-chord.png",
+        "textsim": "assets/images/cropweed-Lambsquarters_687_leaf_amount-textsim.png",
+        "cascade": "assets/images/cropweed-Lambsquarters_687_leaf_amount-cascade.png"
+      },
+      "metrics": {
+        "chord": {
+          "psnr_unedit": 19.851547352125337,
+          "mse_unedit_x1e3": 10.347734205424786,
+          "lpips_unedit_x1e3": 163.88031840324402,
+          "clip_whole": 31.31965446472168,
+          "clip_edited": 27.846223831176758
+        },
+        "textsim": {
+          "psnr_unedit": 19.855624931399745,
+          "mse_unedit_x1e3": 10.33802330493927,
+          "lpips_unedit_x1e3": 159.3128889799118,
+          "clip_whole": 32.44794845581055,
+          "clip_edited": 29.441654205322266
+        },
+        "cascade": {
+          "psnr_unedit": 19.86518020738718,
+          "mse_unedit_x1e3": 10.31530275940895,
+          "lpips_unedit_x1e3": 157.92056918144226,
+          "clip_whole": 33.06061553955078,
+          "clip_edited": 30.17961883544922
+        }
+      },
+      "delta": {
+        "psnr_unedit": 0.013632855261842991,
+        "mse_unedit_x1e3": -0.03243144601583481,
+        "lpips_unedit_x1e3": -5.959749221801758,
+        "clip_whole": 1.7409610748291016,
+        "clip_edited": 2.333395004272461
+      }
+    }
+  ],
+  "benchmarks": {
+    "PIE": {
+      "all": {
+        "chord": {
+          "psnr_unedit": 22.44211697033639,
+          "mse_unedit_x1e3": 8.279884006998087,
+          "lpips_unedit_x1e3": 121.06285157187159,
+          "clip_whole": 25.86538779258728,
+          "clip_edited": 22.580202445302692
+        },
+        "textsim": {
+          "psnr_unedit": 24.38735067181803,
+          "mse_unedit_x1e3": 5.406783624035964,
+          "lpips_unedit_x1e3": 92.67033443076615,
+          "clip_whole": 24.478724471500943,
+          "clip_edited": 21.1327725315094
+        },
+        "cascade": {
+          "psnr_unedit": 24.132728177822734,
+          "mse_unedit_x1e3": 5.70122545434065,
+          "lpips_unedit_x1e3": 94.45894037548406,
+          "clip_whole": 24.721444202150618,
+          "clip_edited": 21.386836997440884
+        }
+      },
+      "groups": {}
+    },
+    "CropWeed": {
+      "all": {
+        "chord": {
+          "psnr_unedit": 25.498719893563564,
+          "mse_unedit_x1e3": 3.4165954134661702,
+          "lpips_unedit_x1e3": 106.36480966395897,
+          "clip_whole": 25.740300516256198,
+          "clip_edited": 22.354515416603387
+        },
+        "textsim": {
+          "psnr_unedit": 25.9587810422974,
+          "mse_unedit_x1e3": 3.1089585349587923,
+          "lpips_unedit_x1e3": 101.38342370275467,
+          "clip_whole": 25.733772721628505,
+          "clip_edited": 21.51422690495731
+        },
+        "cascade": {
+          "psnr_unedit": 25.913173301767785,
+          "mse_unedit_x1e3": 3.1384535032659158,
+          "lpips_unedit_x1e3": 100.94075612164667,
+          "clip_whole": 25.77270462428491,
+          "clip_edited": 21.626170182368888
+        }
+      },
+      "groups": {
+        "weather": {
+          "chord": {
+            "psnr_unedit": 25.873017846605645,
+            "mse_unedit_x1e3": 3.0695810831428383,
+            "lpips_unedit_x1e3": 95.86957840709242,
+            "clip_whole": 25.38893405687925,
+            "clip_edited": 20.392843134677054
+          },
+          "textsim": {
+            "psnr_unedit": 26.528836112747854,
+            "mse_unedit_x1e3": 2.6509547370517343,
+            "lpips_unedit_x1e3": 93.23140560969125,
+            "clip_whole": 25.268778042698948,
+            "clip_edited": 19.495878347436832
+          },
+          "cascade": {
+            "psnr_unedit": 26.471729502586964,
+            "mse_unedit_x1e3": 2.6835000209732467,
+            "lpips_unedit_x1e3": 93.0736736766499,
+            "clip_whole": 25.320644904351497,
+            "clip_edited": 19.582115660172704
+          }
+        },
+        "soil_type": {
+          "chord": {
+            "psnr_unedit": 25.236207028807886,
+            "mse_unedit_x1e3": 3.619487723767197,
+            "lpips_unedit_x1e3": 103.71117824058874,
+            "clip_whole": 26.51537863385336,
+            "clip_edited": 22.130276272280714
+          },
+          "textsim": {
+            "psnr_unedit": 25.85212833001451,
+            "mse_unedit_x1e3": 3.155805636158661,
+            "lpips_unedit_x1e3": 97.40818924497971,
+            "clip_whole": 26.443711943073122,
+            "clip_edited": 20.594274115133047
+          },
+          "cascade": {
+            "psnr_unedit": 25.819249683667834,
+            "mse_unedit_x1e3": 3.179444430221673,
+            "lpips_unedit_x1e3": 97.30747056388603,
+            "clip_whole": 26.463644064877073,
+            "clip_edited": 20.784006394993636
+          }
+        },
+        "leaf_amount": {
+          "chord": {
+            "psnr_unedit": 25.3869017913704,
+            "mse_unedit_x1e3": 3.5607599975818074,
+            "lpips_unedit_x1e3": 119.51755564681838,
+            "clip_whole": 25.316463721692738,
+            "clip_edited": 24.541072416221045
+          },
+          "textsim": {
+            "psnr_unedit": 25.49524182578424,
+            "mse_unedit_x1e3": 3.520236660105647,
+            "lpips_unedit_x1e3": 113.51425784028851,
+            "clip_whole": 25.488755838728768,
+            "clip_edited": 24.453396031790348
+          },
+          "cascade": {
+            "psnr_unedit": 25.44840349737616,
+            "mse_unedit_x1e3": 3.55253831570718,
+            "lpips_unedit_x1e3": 112.44452057094949,
+            "clip_whole": 25.533754354387927,
+            "clip_edited": 24.513240889550946
+          }
+        }
+      }
+    }
+  },
+  "counts": {
+    "PIE": {
+      "semantic": 700,
+      "preservation": 556
+    },
+    "CropWeed": {
+      "total": 10160,
+      "weather": 3387,
+      "soil_type": 3387,
+      "leaf_amount": 3386
+    }
+  },
+  "selection": "Visually reviewed selected successes with gains in PSNR, LPIPS and CLIP-Edited, and at least four of five saved metrics. Not a random or representative benchmark subset."
+}
