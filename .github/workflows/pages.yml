@@ -19,19 +19,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Version manuscript links to refresh cached PDFs
-        run: |
-          python3 - <<'PY'
-          import hashlib
-          from pathlib import Path
-
-          pdf = Path("dist/assets/SearchChord.pdf")
-          version = hashlib.sha256(pdf.read_bytes()).hexdigest()[:16]
-          index = Path("dist/index.html")
-          html = index.read_text(encoding="utf-8")
-          html = html.replace('href="assets/SearchChord.pdf"', f'href="assets/SearchChord.pdf?v={version}"')
-          index.write_text(html, encoding="utf-8")
-          PY
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
