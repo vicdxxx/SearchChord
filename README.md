@@ -5,7 +5,7 @@ A static, responsive research project page ready for GitHub Pages. No package in
 ## Contents
 
 - `dist/`: the complete deployable page, 24 selected comparisons (12 PIE-Bench + 12 CropWeed), 96 byte-identical gallery images, separate header comparisons, manuscript PDF, full benchmark means, method overview, figure and BibTeX.
-- `.github/workflows/pages.yml`: deployment on pushes to `main`, or a manual workflow run.
+- `.github/workflows/pages.yml`: deployment on pushes to `master` or `main`, or a manual workflow run.
 - `prepare_assets.py`: reproducible packaging from the saved local experiment outputs. This script checks input hashes, metric records and saved manifests; it never runs inference or scoring.
 
 ## Preview locally
@@ -21,7 +21,7 @@ Visit `http://127.0.0.1:8811`. Serve through HTTP; opening `index.html` directly
 1. Create the intended project repository and upload this project directory, including `.github` and `dist`.
 2. Set the correct URLs in `dist/site-config.js`: `repositoryUrl` to the repository, and `siteUrl` to the actual published project page.
 3. In repository **Settings → Pages**, choose **GitHub Actions** as the source.
-4. Push to `main` or run the **Deploy project page to GitHub Pages** workflow.
+4. Push to `master` (this repository's default branch) or `main`, or run the **Deploy project page to GitHub Pages** workflow.
 5. Verify the URL returned by deployment. Project URLs normally have the form `https://OWNER.github.io/REPOSITORY/`. Use the verified URL when adding a link to the abstract.
 
 Official instructions: https://docs.github.com/en/pages/getting-started-with-github-pages/creating-a-github-pages-site
