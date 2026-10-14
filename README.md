@@ -4,7 +4,7 @@ A static, responsive research project page ready for GitHub Pages. No package in
 
 ## Contents
 
-- `dist/`: the complete deployable page, 24 selected comparisons (12 PIE-Bench + 12 CropWeed), 96 byte-identical gallery images, separate header comparisons, manuscript PDF, full benchmark means, method overview, figure and BibTeX.
+- `dist/`: the complete deployable page, 24 selected comparisons (12 PIE-Bench + 12 CropWeed), 96 byte-identical gallery images, separate header comparisons, full benchmark means, method overview, figure and BibTeX. The paper displays “update soon”; no manuscript PDF is provided.
 - `.github/workflows/pages.yml`: deployment on pushes to `master` or `main`, or a manual workflow run.
 - `prepare_assets.py`: reproducible packaging from the saved local experiment outputs. This script checks input hashes, metric records and saved manifests; it never runs inference or scoring.
 

@@ -119,10 +119,7 @@ def main():
     (DIST/'assets/data/results.json').write_text(json.dumps(payload,indent=2,allow_nan=False),encoding='utf-8')
     for name in ['fig3_scaling.png']:
         shutil.copy2(PAPER/'fig'/name,DIST/'assets'/name)
-    guard=json.loads((CHORD/'table1_experiments/paper_validation.json').read_text(encoding='utf-8'))
-    pdf=Path(guard['paper_revision_audit']).parent/'final_saved_snapshot.pdf'
-    shutil.copy2(pdf,DIST/'assets/SearchChord.pdf')
-    (AUDIT/'asset_validation.json').write_text(json.dumps({'verified':True,'selected_per_dataset':{d:len(SELECTED[d]) for d in SELECTED},'saved_images_identical':True,'all_selected_joint_metric_gains':True,'input_hashes':sources,'examples':provenance,'paper_pdf_sha256':sha(pdf),'paper_source_sha256':sha(PAPER/'main.tex'),'no_inference_launched':True},indent=2),encoding='utf-8')
+    (AUDIT/'asset_validation.json').write_text(json.dumps({'verified':True,'selected_per_dataset':{d:len(SELECTED[d]) for d in SELECTED},'saved_images_identical':True,'all_selected_joint_metric_gains':True,'input_hashes':sources,'examples':provenance,'paper_source_sha256':sha(PAPER/'main.tex'),'no_inference_launched':True},indent=2),encoding='utf-8')
     print(json.dumps({'examples':len(examples),'original_image_files':len(examples)*4,'verified':True}))
 if __name__=='__main__':
     main()
